@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import Script from 'react-load-script';
+
 import '../styles/globals.css'
 
 class MyApp extends PureComponent {
@@ -22,27 +24,28 @@ class MyApp extends PureComponent {
       link.id = 'antd-css-v4-import'
       link.rel = "stylesheet"
       link.type = "text/css"
-      // link.href = 'https://cdn.jsdelivr.net/npm/antd@3.26.20/dist/antd.min.css';
-      // link.href = 'https://cdn.jsdelivr.net/npm/antd@4.15.2/dist/antd.min.css';
       link.href = 'https://cdn.jsdelivr.net/npm/antd@4.15.1/dist/antd.min.css';
       head.appendChild(link)
+    }
+    this.loadJS = function (url) {
+      let xhr = new XMLHttpRequest()
+      xhr.open("GET", url, false)
+      xhr.send()
+      window.eval(xhr.responseText)
     }
   }
   render() {
     let Fthis = this
-
     if (this.state.ready) {
+      this.loadJS("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.js")
+      this.loadJS("https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.js")
       return (<>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
         <Fthis.props.Component {...Fthis.props.pageProps} />
       </>
       )
     }
     return (
       <div style={{}}>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
         LOADING
       </div>
     )
