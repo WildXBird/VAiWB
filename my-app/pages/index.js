@@ -50,23 +50,22 @@ class Home extends PureComponent {
     this.startListeningOrder = function () {
       console.log("startListeningOrder")
       window.currentUserSpeakText = ""
-      {
-        const audio = new Audio();
-        audio.autoplay = true;
-        audio.src = '../public/hello.wav';
-      }
-      // window.botIsListening = true
+      // {
+      //   const audio = new Audio();
+      //   audio.autoplay = true;
+      //   audio.src = 'https://cdn.jsdelivr.net/gh/WildXBird/VAiWB/my-app/public/hello.mp3';
+      // }
+
       var recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.lang = SpeechRecognitionLanguage;
       recognition.interimResults = true
       recognition.maxAlternatives = 5
-      console.log(recognition.lang)
+      console.log("recognition.lang", recognition.lang)
+      // setTimeout(() => {
       recognition.start();
-      let finalResult = {
-        text: "",
-        timer: undefined
-      }
+      // }, 500);
+
       recognition.onresult = function (event) {
         let lastLine = event.results[event.results.length - 1]
         let isFinal = lastLine.isFinal
