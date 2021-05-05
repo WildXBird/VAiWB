@@ -301,6 +301,28 @@ class Home extends PureComponent {
         //  };
       })
     }
+    this.remoteControl = function (deviceId = 0, action = "on") {
+      return new Promise(function (resolve, reject) {
+        setTimeout(() => {
+          reject("网络超时了")
+        }, 4000);
+        let url = `https://dev-vaiwb-remotecontrol.r6sg.workers.dev/${deviceId}_${action}`
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            let state = data.isNowOn
+            if(state == true){
+              resolve("已打开")
+            }else{
+              resolve("已关闭")
+            }
+          })
+          .catch(function (error) {
+            resolve("出错了")
+          })
+      })
+    }
+
     // this.speakText("我在")
     // return
     {
@@ -362,7 +384,6 @@ class Home extends PureComponent {
       subTitle = <>
         {"正在聆听"}
         <br />
-        {/* <code className={styles.code}>{"请说 六号战场"}</code> */}
         <code className={styles.code}>{this.state.probability}%</code>
       </>
     }
@@ -376,9 +397,7 @@ class Home extends PureComponent {
 
         <main className={styles.main}>
           <h1 className={styles.title}>
-            {/* {"浏览器里的"}<a>{"语音助手"}</a> */}
           </h1>
-
           <p className={styles.description}>
             {subTitle}
           </p>
@@ -391,10 +410,7 @@ class Home extends PureComponent {
             footer={null}
             visible={this.state.startListening || this.state.tryResponse || this.state.speaking}
             closable={false}
-          // onOk={handleOk}
-          //  onCancel={handleCancel}
           >
-            {/* <Title level={5} style={{ color: !!this.state.currentTextIsFinal ? "#00000000" : "#0000004a", }}>{"正在听"}</Title> */}
             <Title level={3} style={{
               marginTop: "0.5em",
               color: this.state.currentTextIsFinal ? "#000" : "#0000004a",
@@ -412,16 +428,6 @@ class Home extends PureComponent {
 
         <footer className={styles.footer}>
           {"毕业设计"}
-          {/* <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Powered by{' '}
-            <span className={styles.logo}>
-              <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-            </span>
-          </a> */}
         </footer>
       </div>
     )

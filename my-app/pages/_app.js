@@ -6,9 +6,6 @@ import '../styles/globals.css'
 class MyApp extends PureComponent {
   constructor(props) {
     super(props)
-    this.ref = React.createRef();
-    this.ref_mobile = React.createRef();
-    this.anchorRef = React.createRef();
     this.state = {
     }
   }
