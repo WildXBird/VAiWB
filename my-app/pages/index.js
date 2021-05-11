@@ -102,7 +102,21 @@ class Home extends PureComponent {
       console.log("dealOrder", text)
       if (hasText(text, "天气") || hasText(text, "温度") || hasText(text, "热") || hasText(text, "冷") || hasText(text, "雨")) {
         Fthis.search4Weather(text).then(function (response) {
-          console.log("response", response);
+          console.log("search4Weather.response", response);
+          Fthis.setState({ tryResponse: false })
+          Fthis.speakText(response).then(function (response) {
+            Fthis.resetState()
+          })
+        }).catch(function (error) {
+          Fthis.setState({ tryResponse: false, speaking: false })
+          Fthis.speakText(error).then(function (response) {
+            Fthis.resetState()
+          })
+        })
+        return
+      } else if (hasText(text, "灯") || hasText(text, "打开") || hasText(text, "关闭")) {
+        Fthis.deviceControl(text).then(function (response) {
+          console.log("deviceControl.response", response);
           Fthis.setState({ tryResponse: false })
           Fthis.speakText(response).then(function (response) {
             Fthis.resetState()
@@ -119,6 +133,13 @@ class Home extends PureComponent {
       //无效指令
       console.log("无效指令",text)
       Fthis.resetState()
+    }
+    this.deviceControl = function () {
+      let url = `https://dev-vaiwb.r6sg.workers.dev/${cityId}`
+      fetch(url)
+        .then(response => response.json())
+        .catch(response => response.json())
+        
     }
     this.search4Weather = function (text = "") {
       return new Promise(function (resolve, reject) {
@@ -302,28 +323,6 @@ class Home extends PureComponent {
         //  };
       })
     }
-    this.remoteControl = function (deviceId = 0, action = "on") {
-      return new Promise(function (resolve, reject) {
-        setTimeout(() => {
-          reject("网络超时了")
-        }, 4000);
-        let url = `https://dev-vaiwb-remotecontrol.r6sg.workers.dev/${deviceId}_${action}`
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            let state = data.isNowOn
-            if(state == true){
-              resolve("已打开")
-            }else{
-              resolve("已关闭")
-            }
-          })
-          .catch(function (error) {
-            resolve("出错了")
-          })
-      })
-    }
-
     // this.speakText("我在")
     // return
     {
@@ -385,6 +384,7 @@ class Home extends PureComponent {
       subTitle = <>
         {"正在聆听"}
         <br />
+        {/* <code className={styles.code}>{"请说 六号战场"}</code> */}
         <code className={styles.code}>{this.state.probability}%</code>
       </>
     }
@@ -398,7 +398,9 @@ class Home extends PureComponent {
 
         <main className={styles.main}>
           <h1 className={styles.title}>
+            {/* {"浏览器里的"}<a>{"语音助手"}</a> */}
           </h1>
+
           <p className={styles.description}>
             {subTitle}
           </p>
@@ -411,7 +413,10 @@ class Home extends PureComponent {
             footer={null}
             visible={this.state.startListening || this.state.tryResponse || this.state.speaking}
             closable={false}
+          // onOk={handleOk}
+          //  onCancel={handleCancel}
           >
+            {/* <Title level={5} style={{ color: !!this.state.currentTextIsFinal ? "#00000000" : "#0000004a", }}>{"正在听"}</Title> */}
             <Title level={3} style={{
               marginTop: "0.5em",
               color: this.state.currentTextIsFinal ? "#000" : "#0000004a",
@@ -429,6 +434,16 @@ class Home extends PureComponent {
 
         <footer className={styles.footer}>
           {"毕业设计"}
+          {/* <a
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Powered by{' '}
+            <span className={styles.logo}>
+              <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            </span>
+          </a> */}
         </footer>
       </div>
     )
