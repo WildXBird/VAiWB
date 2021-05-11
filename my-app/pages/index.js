@@ -117,6 +117,7 @@ class Home extends PureComponent {
       }
 
       //无效指令
+      console.log("无效指令",text)
       Fthis.resetState()
     }
     this.search4Weather = function (text = "") {
